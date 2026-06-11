@@ -32,10 +32,9 @@ export default function Sidebar({
   const menuItems = [
     { name: 'Dashboard', icon: LayoutDashboard },
     { name: 'My Roadmap', icon: Compass },
-    { name: 'Learning Modules', icon: BookOpen },
+    { name: 'Learning', icon: BookOpen },
     { name: 'Projects', icon: FolderGit2 },
-    { name: 'Skill Validation', icon: ShieldCheck },
-    { name: 'Portfolio', icon: Briefcase },
+    { name: 'Skill Verification', icon: ShieldCheck },
     { name: 'Startup Opportunities', icon: Rocket },
     { name: 'Community', icon: Users },
     { name: 'Profile', icon: User },

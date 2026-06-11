@@ -3,13 +3,15 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Sidebar from '@/components/dashboard/Sidebar';
 import TopNavbar from '@/components/dashboard/TopNavbar';
+import { DashboardProvider, useDashboard } from './DashboardContext';
+import DailyGoalCard from '@/components/dashboard/DailyGoalCard';
 
 interface UserSession {
   name: string;
   email: string;
 }
 
-export default function DashboardLayout({
+function DashboardLayoutContent({
   children,
 }: {
   children: React.ReactNode;
@@ -18,6 +20,8 @@ export default function DashboardLayout({
   const [userSession, setUserSession] = useState<UserSession | null>(null);
   const [activeTab, setActiveTab] = useState('Dashboard');
   const router = useRouter();
+
+  const { isDailyGoalCompleted, weeklyProgressPercent, streakCount } = useDashboard();
 
   useEffect(() => {
     const saved = localStorage.getItem('mm_user_session');
@@ -80,7 +84,18 @@ export default function DashboardLayout({
           </main>
 
           {/* Right Sidebar (reserved for future notifications & mentor updates) */}
-          <aside className="w-full lg:w-80 border-t lg:border-t-0 lg:border-l border-white/5 bg-zinc-950/20 backdrop-blur-md p-6 space-y-6 lg:min-h-full text-left">
+          <aside className="w-full lg:w-80 border-t lg:border-t-0 lg:border-l border-white/5 bg-zinc-950/20 backdrop-blur-md p-6 space-y-6 lg:min-h-full text-left shrink-0">
+            
+            {/* Daily Goal status cards */}
+            <DailyGoalCard
+              dailyGoalText="Complete your first learning module."
+              isDailyGoalCompleted={isDailyGoalCompleted}
+              weeklyProgressPercent={weeklyProgressPercent}
+              streakCount={streakCount}
+            />
+
+            <div className="h-px bg-white/5" />
+
             <div className="space-y-4">
               <h3 className="text-xs font-mono font-bold text-zinc-400 uppercase tracking-widest">
                 Mentor Activity & Updates
@@ -112,5 +127,17 @@ export default function DashboardLayout({
 
       </div>
     </div>
+  );
+}
+
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <DashboardProvider>
+      <DashboardLayoutContent>{children}</DashboardLayoutContent>
+    </DashboardProvider>
   );
 }

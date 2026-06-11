@@ -39,11 +39,22 @@ export default function TopNavbar({ userSession, onSignOut }: TopNavbarProps) {
   return (
     <header className="h-16 border-b border-white/5 bg-zinc-950/40 backdrop-blur-md px-6 flex items-center justify-between relative z-30">
       
-      {/* Personalized Greeting */}
-      <div className="text-left">
-        <h2 className="text-sm font-bold text-white tracking-tight flex items-center gap-1">
-          Welcome back, {activeName} 👋
-        </h2>
+      {/* Brand Logo & Greeting */}
+      <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-2 group">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-violet-600 to-fuchsia-600 flex items-center justify-center font-bold text-white shadow-[0_0_15px_rgba(139,92,246,0.3)]">
+            <span className="text-base font-extrabold relative -top-[1px]">X</span>
+          </div>
+          <span className="text-xs font-extrabold tracking-tight text-white hidden sm:inline-block">
+            Make<span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-fuchsia-400">Mistakes</span>
+          </span>
+        </div>
+        <div className="h-4 w-px bg-white/10 hidden sm:block" />
+        <div className="text-left">
+          <h2 className="text-xs md:text-sm font-bold text-white tracking-tight flex items-center gap-1">
+            Welcome back, {activeName} 👋
+          </h2>
+        </div>
       </div>
 
       {/* Utility items */}
