@@ -21,9 +21,11 @@ interface UserSession {
   name: string;
   email: string;
   phone?: string;
-  career?: string;
-  commitment?: string;
-  goal?: string;
+  careerClarity?: string;
+  codingExperience?: string;
+  interests?: string[];
+  mainGoal?: string;
+  weeklyAvailability?: string;
 }
 
 function App() {
@@ -56,7 +58,13 @@ function App() {
   };
 
   // Handle onboarding questionnaire completion
-  const handleOnboardingComplete = (data: { career: string; commitment: string; goal: string }) => {
+  const handleOnboardingComplete = (data: {
+    careerClarity: string;
+    codingExperience: string;
+    interests: string[];
+    mainGoal: string;
+    weeklyAvailability: string;
+  }) => {
     if (tempSession) {
       const completedSession = { ...tempSession, ...data };
       setUserSession(completedSession);
