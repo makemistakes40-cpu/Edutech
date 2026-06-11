@@ -1,4 +1,6 @@
+"use client";
 import { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import { Menu, X, ArrowRight, User, LogOut, LayoutDashboard } from 'lucide-react';
 
 interface NavbarProps {
@@ -8,6 +10,7 @@ interface NavbarProps {
 }
 
 export default function Navbar({ userSession, onSignOut, onNavigate }: NavbarProps) {
+  const router = useRouter();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
@@ -123,7 +126,7 @@ export default function Navbar({ userSession, onSignOut, onNavigate }: NavbarPro
                     <button
                       onClick={() => {
                         setIsUserDropdownOpen(false);
-                        handleLinkClick('#tracks');
+                        router.push('/dashboard');
                       }}
                       className="flex items-center space-x-3 text-sm text-zinc-400 hover:text-white py-1.5 focus:outline-none cursor-pointer"
                     >

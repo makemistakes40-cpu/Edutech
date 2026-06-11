@@ -43,6 +43,7 @@ interface OnboardingFormProps {
 export default function OnboardingForm({ userSession, onComplete }: OnboardingFormProps) {
   // Step state initialized from localStorage if it exists
   const [step, setStep] = useState<number>(() => {
+    if (typeof window === 'undefined') return 0;
     const saved = localStorage.getItem('mm_onboarding_state');
     if (saved) {
       try {
@@ -59,6 +60,15 @@ export default function OnboardingForm({ userSession, onComplete }: OnboardingFo
 
   // Selections state initialized from localStorage if it exists
   const [selections, setSelections] = useState(() => {
+    if (typeof window === 'undefined') {
+      return {
+        careerClarity: '',
+        codingExperience: '',
+        interests: [] as string[],
+        mainGoal: '',
+        weeklyAvailability: '',
+      };
+    }
     const saved = localStorage.getItem('mm_onboarding_state');
     if (saved) {
       try {
@@ -85,10 +95,12 @@ export default function OnboardingForm({ userSession, onComplete }: OnboardingFo
 
   // Save selections to localStorage on every change
   useEffect(() => {
-    localStorage.setItem(
-      'mm_onboarding_state',
-      JSON.stringify({ step, ...selections })
-    );
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(
+        'mm_onboarding_state',
+        JSON.stringify({ step, ...selections })
+      );
+    }
   }, [step, selections]);
 
   // Option lists configuration
