@@ -1,5 +1,7 @@
 "use client";
 import React from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { 
   LayoutDashboard, 
   Compass, 
@@ -29,16 +31,18 @@ export default function Sidebar({
   activeTab,
   setActiveTab,
 }: SidebarProps) {
+  const pathname = usePathname();
+
   const menuItems = [
-    { name: 'Dashboard', icon: LayoutDashboard },
-    { name: 'My Roadmap', icon: Compass },
-    { name: 'Learning', icon: BookOpen },
-    { name: 'Projects', icon: FolderGit2 },
-    { name: 'Skill Verification', icon: ShieldCheck },
-    { name: 'Startup Opportunities', icon: Rocket },
-    { name: 'Community', icon: Users },
-    { name: 'Profile', icon: User },
-    { name: 'Settings', icon: Settings },
+    { name: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' },
+    { name: 'My Roadmap', icon: Compass, href: '/dashboard/roadmap' },
+    { name: 'Learning', icon: BookOpen, href: '/dashboard' },
+    { name: 'Projects', icon: FolderGit2, href: '/dashboard' },
+    { name: 'Skill Verification', icon: ShieldCheck, href: '/dashboard' },
+    { name: 'Startup Opportunities', icon: Rocket, href: '/dashboard' },
+    { name: 'Community', icon: Users, href: '/dashboard' },
+    { name: 'Profile', icon: User, href: '/dashboard' },
+    { name: 'Settings', icon: Settings, href: '/dashboard' },
   ];
 
   return (
@@ -71,12 +75,12 @@ export default function Sidebar({
       <nav className="flex-1 py-6 px-3 space-y-1 overflow-y-auto pr-1 scrollbar-thin">
         {menuItems.map((item) => {
           const Icon = item.icon;
-          const isActive = activeTab === item.name;
+          const isActive = pathname === item.href;
 
           return (
-            <button
+            <Link
               key={item.name}
-              onClick={() => setActiveTab(item.name)}
+              href={item.href}
               className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 cursor-pointer group focus:outline-none focus:ring-1 focus:ring-violet-500 ${
                 isActive
                   ? 'bg-violet-600/10 border border-violet-500/20 text-white font-semibold'
@@ -94,7 +98,7 @@ export default function Sidebar({
                   {item.name}
                 </span>
               )}
-            </button>
+            </Link>
           );
         })}
       </nav>
