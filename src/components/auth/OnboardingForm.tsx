@@ -1,29 +1,97 @@
 import { useState, useEffect } from 'react';
-import { Check, Cpu, Terminal, Database, Smartphone, ShieldCheck, Server, Lock, Gamepad2, ArrowRight, ArrowLeft, HeartHandshake, Loader2 } from 'lucide-react';
+import { 
+  Check, 
+  Cpu, 
+  Terminal, 
+  Database, 
+  Smartphone, 
+  ShieldCheck, 
+  Server, 
+  ArrowRight, 
+  ArrowLeft, 
+  HeartHandshake, 
+  Loader2,
+  Code,
+  Code2,
+  Sparkles,
+  Briefcase
+} from 'lucide-react';
 import PrimaryButton from './PrimaryButton';
 
 interface OnboardingFormProps {
   userSession: { name: string; email: string };
-  onComplete: () => void;
+  onComplete: (data: { career: string; commitment: string; goal: string }) => void;
 }
 
 export default function OnboardingForm({ userSession, onComplete }: OnboardingFormProps) {
   const [step, setStep] = useState(1);
-  const [selectedTracks, setSelectedTracks] = useState<string[]>([]);
+  const [selectedCareer, setSelectedCareer] = useState<string>('');
   const [commitment, setCommitment] = useState('');
   const [goal, setGoal] = useState('');
   const [isMatching, setIsMatching] = useState(false);
   const [matchProgress, setMatchProgress] = useState(0);
 
-  const tracks = [
-    { id: 'ai', title: 'AI Engineering', icon: Cpu, desc: 'LLMs, RAG, agents' },
-    { id: 'fs', title: 'Full Stack', icon: Terminal, desc: 'Next.js, SQL, WebSockets' },
-    { id: 'ds', title: 'Data Science', icon: Database, desc: 'EDA, pipelines, ML models' },
-    { id: 'mobile', title: 'Mobile Dev', icon: Smartphone, desc: 'React Native, Native SDKs' },
-    { id: 'cyber', title: 'Cybersecurity', icon: ShieldCheck, desc: 'Pen testing, cryptography' },
-    { id: 'devops', title: 'DevOps & Cloud', icon: Server, desc: 'Terraform, K8s, Docker' },
-    { id: 'web3', title: 'Blockchain & Web3', icon: Lock, desc: 'Solidity, smart contracts' },
-    { id: 'game', title: 'Game Dev', icon: Gamepad2, desc: 'Unity, C#, physics loops' },
+  const careers = [
+    {
+      id: 'software_engineer',
+      title: 'Software Engineer',
+      icon: Terminal,
+      desc: 'Design and build core logic, algorithms, and systems.'
+    },
+    {
+      id: 'frontend_developer',
+      title: 'Frontend Developer',
+      icon: Code2,
+      desc: 'Craft highly interactive, responsive, and beautiful user interfaces.'
+    },
+    {
+      id: 'backend_developer',
+      title: 'Backend Developer',
+      icon: Database,
+      desc: 'Construct scalable APIs, databases, and system architectures.'
+    },
+    {
+      id: 'fullstack_developer',
+      title: 'Full Stack Developer',
+      icon: Code,
+      desc: 'Manage both user-facing code and underlying server/database infrastructure.'
+    },
+    {
+      id: 'mobile_developer',
+      title: 'Mobile App Developer',
+      icon: Smartphone,
+      desc: 'Develop high-performance iOS and Android applications.'
+    },
+    {
+      id: 'ai_data_engineer',
+      title: 'Data Scientist / AI Engineer',
+      icon: Cpu,
+      desc: 'Build machine learning pipelines, LLM agents, and predictive models.'
+    },
+    {
+      id: 'cybersecurity_engineer',
+      title: 'Cybersecurity Engineer',
+      icon: ShieldCheck,
+      desc: 'Secure network infrastructure, audit codebases, and run pen tests.'
+    },
+    {
+      id: 'devops_cloud_engineer',
+      title: 'DevOps / Cloud Engineer',
+      icon: Server,
+      desc: 'Automate CI/CD pipelines, containerize apps, and manage cloud clusters.'
+    },
+    {
+      id: 'uiux_designer',
+      title: 'UI/UX Designer',
+      icon: Sparkles,
+      desc: 'Design visual layouts, user journeys, and premium interactive prototypes.'
+    },
+    {
+      id: 'product_manager',
+      title: 'Product Manager',
+      icon: Briefcase,
+      desc: 'Define product roadmap, align developers, and drive release metrics.'
+    }
   ];
 
   const commitments = [
@@ -39,14 +107,6 @@ export default function OnboardingForm({ userSession, onComplete }: OnboardingFo
     { value: 'learn', label: 'Learn from industry engineers', desc: 'Receive automated linter checks and peer PR audits.' },
   ];
 
-  const handleTrackToggle = (trackId: string) => {
-    if (selectedTracks.includes(trackId)) {
-      setSelectedTracks(selectedTracks.filter((t) => t !== trackId));
-    } else {
-      setSelectedTracks([...selectedTracks, trackId]);
-    }
-  };
-
   const handleFinish = () => {
     setIsMatching(true);
   };
@@ -59,7 +119,11 @@ export default function OnboardingForm({ userSession, onComplete }: OnboardingFo
         if (prev >= 100) {
           clearInterval(interval);
           setTimeout(() => {
-            onComplete();
+            onComplete({
+              career: selectedCareer,
+              commitment,
+              goal,
+            });
           }, 1000);
           return 100;
         }
@@ -68,7 +132,7 @@ export default function OnboardingForm({ userSession, onComplete }: OnboardingFo
     }, 25);
 
     return () => clearInterval(interval);
-  }, [isMatching, onComplete]);
+  }, [isMatching, onComplete, selectedCareer, commitment, goal]);
 
   const getMatchStatus = (): string => {
     if (matchProgress < 25) {
@@ -139,41 +203,43 @@ export default function OnboardingForm({ userSession, onComplete }: OnboardingFo
 
         {/* Dynamic Steps Content */}
         {step === 1 && (
-          <div className="space-y-6 text-left">
+          <div className="space-y-6 text-left animate-in fade-in duration-300">
             <div className="space-y-1">
-              <h3 className="text-xl font-bold text-white tracking-tight">Which tracks are you interested in building?</h3>
-              <p className="text-xs text-zinc-400 font-medium">Select all that apply to help match you with relevant codebase missions.</p>
+              <h3 className="text-xl font-bold text-white tracking-tight">Choose your primary tech career path</h3>
+              <p className="text-xs text-zinc-400 font-medium">Pick the path you want to focus on first. You can change or add more career paths later.</p>
             </div>
             
-            <div className="grid grid-cols-2 gap-3.5">
-              {tracks.map((track) => {
-                const TrackIcon = track.icon;
-                const isSelected = selectedTracks.includes(track.id);
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 max-h-[380px] overflow-y-auto pr-1 scrollbar-thin">
+              {careers.map((career) => {
+                const CareerIcon = career.icon;
+                const isSelected = selectedCareer === career.id;
                 return (
                   <button
-                    key={track.id}
-                    onClick={() => handleTrackToggle(track.id)}
-                    className={`p-4 rounded-xl border text-left transition-all duration-200 flex flex-col justify-between h-28 relative group cursor-pointer ${
+                    key={career.id}
+                    onClick={() => setSelectedCareer(career.id)}
+                    className={`p-4 rounded-xl border text-left transition-all duration-200 flex flex-col justify-between min-h-[7rem] h-auto relative group cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 focus:ring-offset-zinc-950 ${
                       isSelected
-                        ? 'bg-violet-600/10 border-violet-500/30'
+                        ? 'bg-violet-600/10 border-violet-500/30 ring-1 ring-violet-500/20'
                         : 'bg-zinc-950/40 border-white/5 hover:border-white/10 hover:bg-zinc-900/30'
                     }`}
+                    aria-pressed={isSelected}
+                    aria-label={`Select ${career.title} path`}
                   >
-                    <div className="flex items-center justify-between w-full">
+                    <div className="flex items-center justify-between w-full mb-2">
                       <div className={`p-1.5 rounded-lg border ${
-                        isSelected ? 'bg-violet-500/20 text-violet-300 border-violet-500/30' : 'bg-zinc-900 border-white/5 text-zinc-500'
+                        isSelected ? 'bg-violet-500/20 text-violet-300 border-violet-500/30' : 'bg-zinc-900 border-white/5 text-zinc-500 group-hover:text-zinc-300 transition-colors'
                       }`}>
-                        <TrackIcon className="w-4 h-4" />
+                        <CareerIcon className="w-4 h-4" />
                       </div>
                       {isSelected && (
-                        <div className="w-4 h-4 rounded-full bg-violet-600 flex items-center justify-center text-white">
+                        <div className="w-4 h-4 rounded-full bg-violet-600 flex items-center justify-center text-white" aria-hidden="true">
                           <Check className="w-2.5 h-2.5 stroke-[3]" />
                         </div>
                       )}
                     </div>
                     <div>
-                      <span className="text-xs font-bold text-zinc-200 block mb-0.5">{track.title}</span>
-                      <span className="text-[10px] text-zinc-500 block truncate">{track.desc}</span>
+                      <span className="text-xs font-bold text-zinc-200 block mb-0.5">{career.title}</span>
+                      <span className="text-[10px] text-zinc-500 block leading-normal group-hover:text-zinc-400 transition-colors">{career.desc}</span>
                     </div>
                   </button>
                 );
@@ -183,7 +249,7 @@ export default function OnboardingForm({ userSession, onComplete }: OnboardingFo
         )}
 
         {step === 2 && (
-          <div className="space-y-6 text-left">
+          <div className="space-y-6 text-left animate-in fade-in duration-300">
             <div className="space-y-1">
               <h3 className="text-xl font-bold text-white tracking-tight">What is your weekly time commitment?</h3>
               <p className="text-xs text-zinc-400 font-medium">Be honest! DevOps, AI, and Full Stack tracks are self-paced.</p>
@@ -196,7 +262,7 @@ export default function OnboardingForm({ userSession, onComplete }: OnboardingFo
                   <button
                     key={c.value}
                     onClick={() => setCommitment(c.value)}
-                    className={`w-full p-4 rounded-xl border text-left transition-all duration-200 flex justify-between items-center cursor-pointer ${
+                    className={`w-full p-4 rounded-xl border text-left transition-all duration-200 flex justify-between items-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 focus:ring-offset-zinc-950 ${
                       isSelected
                         ? 'bg-violet-600/10 border-violet-500/30'
                         : 'bg-zinc-950/40 border-white/5 hover:border-white/10 hover:bg-zinc-900/30'
@@ -219,7 +285,7 @@ export default function OnboardingForm({ userSession, onComplete }: OnboardingFo
         )}
 
         {step === 3 && (
-          <div className="space-y-6 text-left">
+          <div className="space-y-6 text-left animate-in fade-in duration-300">
             <div className="space-y-1">
               <h3 className="text-xl font-bold text-white tracking-tight">What is your primary goal on MakeMistakes?</h3>
               <p className="text-xs text-zinc-400">We will route your profile to companies matching this target.</p>
@@ -232,7 +298,7 @@ export default function OnboardingForm({ userSession, onComplete }: OnboardingFo
                   <button
                     key={g.value}
                     onClick={() => setGoal(g.value)}
-                    className={`w-full p-4 rounded-xl border text-left transition-all duration-200 flex justify-between items-center cursor-pointer ${
+                    className={`w-full p-4 rounded-xl border text-left transition-all duration-200 flex justify-between items-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 focus:ring-offset-zinc-950 ${
                       isSelected
                         ? 'bg-violet-600/10 border-violet-500/30'
                         : 'bg-zinc-950/40 border-white/5 hover:border-white/10 hover:bg-zinc-900/30'
@@ -270,7 +336,7 @@ export default function OnboardingForm({ userSession, onComplete }: OnboardingFo
 
           {step < 3 ? (
             <button
-              disabled={(step === 1 && selectedTracks.length === 0) || (step === 2 && !commitment)}
+              disabled={(step === 1 && !selectedCareer) || (step === 2 && !commitment)}
               onClick={() => setStep(step + 1)}
               className="flex items-center space-x-2 px-5 py-2.5 bg-zinc-900 border border-white/5 hover:border-white/10 text-xs font-bold text-white rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
             >

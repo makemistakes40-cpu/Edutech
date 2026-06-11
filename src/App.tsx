@@ -21,6 +21,9 @@ interface UserSession {
   name: string;
   email: string;
   phone?: string;
+  career?: string;
+  commitment?: string;
+  goal?: string;
 }
 
 function App() {
@@ -53,10 +56,11 @@ function App() {
   };
 
   // Handle onboarding questionnaire completion
-  const handleOnboardingComplete = () => {
+  const handleOnboardingComplete = (data: { career: string; commitment: string; goal: string }) => {
     if (tempSession) {
-      setUserSession(tempSession);
-      localStorage.setItem('mm_user_session', JSON.stringify(tempSession));
+      const completedSession = { ...tempSession, ...data };
+      setUserSession(completedSession);
+      localStorage.setItem('mm_user_session', JSON.stringify(completedSession));
       setTempSession(null);
     }
     setCurrentPage('landing');
